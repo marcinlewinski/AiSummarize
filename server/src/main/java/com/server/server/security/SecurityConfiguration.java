@@ -1,33 +1,67 @@
 package com.server.server.security;
 
-import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
-import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
-import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@KeycloakConfiguration
-public class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
-    @Bean
-    KeycloakSpringBootConfigResolver keycloakSpringBootConfigResolver() {
-        return new KeycloakSpringBootConfigResolver();
+@Configuration
+@EnableWebSecurity
+public class SecurityConfiguration {
+
+    private final KeycloakLogoutHandler keycloakLogoutHandler;
+
+    SecurityConfiguration(com.server.server.security.KeycloakLogoutHandler keycloakLogoutHandler) {
+        this.keycloakLogoutHandler = keycloakLogoutHandler;
     }
 
-    @Override
+    @Bean
     protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
         return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
     }
 
-    @Override
-    public void init(WebSecurity builder) throws Exception {
-
+    @Order(1)
+    @Bean
+    public SecurityFilterChain clientFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .requestMatchers(new AntPathRequestMatcher("/"))
+                .permitAll()
+                .anyRequest()
+                .authenticated();
+        http.oauth2Login()
+                .and()
+                .logout()
+                .addLogoutHandler(keycloakLogoutHandler)
+                .logoutSuccessUrl("/");
+        return http.build();
     }
 
-    @Override
-    public void configure(WebSecurity builder) throws Exception {
-
+    @Order(2)
+    @Bean
+    public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .requestMatchers(new AntPathRequestMatcher("/demo"))
+                .hasRole("USER")
+                .anyRequest()
+                .authenticated();
+        http.oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
+        return http.build();
     }
+
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .build();
+    }
+
+
 }
