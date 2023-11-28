@@ -1,10 +1,18 @@
 services:
   keycloak_ai_summarize:
     image: quay.io/keycloak/keycloak:23.0.0
-    command:
-      - start-dev
-      - --http-port=8180
+    restart: unless-stopped
+    entrypoint: /opt/keycloak/bin/kc.sh start --proxy edge --hostname-strict false --http-port=8180
+#    command:
+#      - start-dev
+#      - --http-port=8180
     environment:
+      PROXY_ADDRESS_FORWARDING: true
+      KC_HOSTNAME_STRICT: false
+      KC_HTTP_ENABLED: true
+      KC_PROXY: edge
+      KC_METRICS_ENABLED: true
+      KC_DB_URL_PORT: 5432
       KC_DB: postgres
       KC_DB_URL_HOST: postgres_keycloak_ai_summarize
       KC_DB_URL_DATABASE: keycloak
@@ -24,6 +32,7 @@ services:
 
   postgres_keycloak_ai_summarize:
     image: postgres:16.1
+    restart: unless-stopped
     volumes:
       - pgdata_keycloak_ai_summarize:/var/lib/postgresql/data
     environment:
@@ -32,12 +41,52 @@ services:
       POSTGRES_PASSWORD: pass
     healthcheck:
       test: "exit 0"
-    ports:
-      - "30009:30009"
+#    ports:
+#      - "30009:30009"
     networks:
       - keycloak_ai_summarize_dev_network
+#  my_monolith_app:
+#    image: your_monolith_image:latest
+#    restart: unless-stopped
+#    environment:
+#      APP_DATABASE_URL: jdbc:postgresql://app_database:5432/app_db
+#      APP_DATABASE_USERNAME: app_user
+#      APP_DATABASE_PASSWORD: app_pass
+#    depends_on:
+#      - app_database
+#    networks:
+#      - monolith_network
+#  app_database:
+#    image: postgres:16.1
+#    restart: unless-stopped
+#    volumes:
+#      - pgdata_app:/var/lib/postgresql/data
+#    environment:
+#      POSTGRES_DB: app_db
+#      POSTGRES_USER: app_user
+#      POSTGRES_PASSWORD: app_pass
+#    healthcheck:
+#      test: "exit 0"
+#    networks:
+#      - monolith_network
+  react-app:
+    image: react-app
+    build: ./client/
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    networks:
+      - monolith_network
+    volumes:
+      - ./client/:/src/app
+      - /src/node_modules
+#    depends_on:
+#      - spring-server
 volumes:
   pgdata_keycloak_ai_summarize:
+  pgdata_app:
 networks:
+  monolith_network:
+    driver: bridge
   keycloak_ai_summarize_dev_network:
     driver: bridge
