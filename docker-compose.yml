@@ -3,9 +3,6 @@ services:
     image: quay.io/keycloak/keycloak:23.0.0
     restart: unless-stopped
     entrypoint: /opt/keycloak/bin/kc.sh start --proxy edge --hostname-strict false --http-port=8180
-#    command:
-#      - start-dev
-#      - --http-port=8180
     environment:
       PROXY_ADDRESS_FORWARDING: true
       KC_HOSTNAME_STRICT: false
@@ -41,8 +38,6 @@ services:
       POSTGRES_PASSWORD: pass
     healthcheck:
       test: "exit 0"
-#    ports:
-#      - "30009:30009"
     networks:
       - keycloak_ai_summarize_dev_network
 #  my_monolith_app:
@@ -69,6 +64,16 @@ services:
 #      test: "exit 0"
 #    networks:
 #      - monolith_network
+  spring-server:
+    image: spring-server
+    build: ./server
+    ports:
+      - "8080:8080"
+    stdin_open: true
+    depends_on:
+      - keycloak_ai_summarize
+    networks:
+      - keycloak_ai_summarize_dev_network
   react-app:
     image: react-app
     build: ./client/
@@ -80,8 +85,8 @@ services:
     volumes:
       - ./client/:/src/app
       - /src/node_modules
-#    depends_on:
-#      - spring-server
+    depends_on:
+      - spring-server
 volumes:
   pgdata_keycloak_ai_summarize:
   pgdata_app:
