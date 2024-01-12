@@ -7,4 +7,15 @@ export const httpClient = axios.create({
 
     },
 });
+// httpClient.interceptors.response.use(
+//     function (response) {
+//         if (response.headers['content-type'] && response.headers['content-type'].includes('application/json')) {
+//             response.data = JSON.parse(response.data);
+//         }
+//         return response.data;
+//     },
+//     function (error) {
+//         return Promise.reject(error)
+//     }
+// )
 
