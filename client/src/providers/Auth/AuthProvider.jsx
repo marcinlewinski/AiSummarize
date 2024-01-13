@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import {createContext, useContext, useEffect, useRef, useState} from "react";
 import Keycloak from "keycloak-js";
-import { httpClient } from "../../hooks/httpClient";
+import {httpClient} from "../../hooks/httpClient";
 
 
 const AuthContext = createContext();
@@ -13,10 +13,31 @@ export const useAuth = () => {
     return context;
 };
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const isRun = useRef(false);
     const kc = useRef(null);
+
+    // const refreshToken = async () => {
+    //     try {
+    //         const refreshed = await kc.current.updateToken(5);
+    //         console.log(refreshed);
+    //         console.log(kc.current)
+    //         if (refreshed) {
+    //             httpClient.defaults.headers.common["Authorization"] = `Bearer ${kc.current.token}`;
+    //         }
+    //         return refreshed;
+    //     } catch (error) {
+    //         console.error("Error refreshing token", error);
+    //         return false;
+    //     }
+    // };
+
+    const logout = () => {
+        kc.current.logout();
+        setIsAuthenticated(false);
+    };
+
 
     useEffect(() => {
         const initializeKeycloak = async () => {
@@ -30,8 +51,7 @@ export const AuthProvider = ({ children }) => {
             });
 
             try {
-                const auth = await kc.current.init({ onLoad: "login-required" });
-
+                const auth = await kc.current.init({onLoad: "login-required"});
                 if (!auth) {
                     window.location.reload();
                 } else {
@@ -40,11 +60,16 @@ export const AuthProvider = ({ children }) => {
                         ] = `Bearer ${kc.current.token}`;
 
                     setIsAuthenticated(true);
-                    kc.current.onTokenExpired = () => {
-                        console.log("token expired");
-                        logout();
-                        setIsAuthenticated(false);
-                    };
+                    // kc.current.onTokenExpired = async () => {
+                    //     console.log("Token expired. Attempting silent refresh...");
+                    //     const refreshed = await refreshToken();
+                    //
+                    //     if (!refreshed) {
+                    //         logout();
+                    //         setIsAuthenticated(false);
+                    //     }
+                    // };
+
                 }
             } catch (error) {
                 console.error("Authentication Failed", error);
@@ -54,14 +79,20 @@ export const AuthProvider = ({ children }) => {
 
         initializeKeycloak();
     }, []);
-
-    const logout = () => {
-        kc.current.logout();
-        setIsAuthenticated(false);
-    };
+    // useEffect(() => {
+    //     const tokenRefreshInterval = setInterval(async () => {
+    //         if (kc.current && kc.current.token) {
+    //
+    //             await refreshToken();
+    //
+    //         }
+    //     }, 50000);
+    //
+    //     return () => clearInterval(tokenRefreshInterval);
+    // }, []);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, logout }}>
+        <AuthContext.Provider value={{isAuthenticated, logout, kc}}>
             {children}
         </AuthContext.Provider>
     );
