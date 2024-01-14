@@ -18,21 +18,29 @@ export const AuthProvider = ({children}) => {
     const isRun = useRef(false);
     const kc = useRef(null);
 
-    // const refreshToken = async () => {
-    //     try {
-    //         const refreshed = await kc.current.updateToken(5);
-    //         console.log(refreshed);
-    //         console.log(kc.current)
-    //         if (refreshed) {
-    //             httpClient.defaults.headers.common["Authorization"] = `Bearer ${kc.current.token}`;
-    //         }
-    //         return refreshed;
-    //     } catch (error) {
-    //         console.error("Error refreshing token", error);
-    //         return false;
-    //     }
-    // };
+    const refreshToken = async () => {
+        try {
+            const refreshed = await kc.current.updateToken(5);
 
+            if (refreshed) {
+                httpClient.defaults.headers.common["Authorization"] = `Bearer ${kc.current.token}`;
+            }
+            return refreshed;
+        } catch (error) {
+            console.error("Error refreshing token", error);
+            return false;
+        }
+    };
+    const checkAndRefreshToken = async () => {
+        if (kc.current && kc.current.token) {
+            const tokenExpiration = kc.current.tokenParsed?.exp || 0;
+            const currentTime = Math.floor(Date.now() / 1000);
+
+            if (tokenExpiration <= currentTime + 60) {
+                await refreshToken();
+            }
+        }
+    };
     const logout = () => {
         kc.current.logout();
         setIsAuthenticated(false);
@@ -60,15 +68,6 @@ export const AuthProvider = ({children}) => {
                         ] = `Bearer ${kc.current.token}`;
 
                     setIsAuthenticated(true);
-                    // kc.current.onTokenExpired = async () => {
-                    //     console.log("Token expired. Attempting silent refresh...");
-                    //     const refreshed = await refreshToken();
-                    //
-                    //     if (!refreshed) {
-                    //         logout();
-                    //         setIsAuthenticated(false);
-                    //     }
-                    // };
 
                 }
             } catch (error) {
@@ -79,17 +78,14 @@ export const AuthProvider = ({children}) => {
 
         initializeKeycloak();
     }, []);
-    // useEffect(() => {
-    //     const tokenRefreshInterval = setInterval(async () => {
-    //         if (kc.current && kc.current.token) {
-    //
-    //             await refreshToken();
-    //
-    //         }
-    //     }, 50000);
-    //
-    //     return () => clearInterval(tokenRefreshInterval);
-    // }, []);
+
+    useEffect(() => {
+        const tokenRefreshInterval = setInterval(async () => {
+            await checkAndRefreshToken();
+        }, 50000);
+
+        return () => clearInterval(tokenRefreshInterval);
+    }, [kc]);
 
     return (
         <AuthContext.Provider value={{isAuthenticated, logout, kc}}>
