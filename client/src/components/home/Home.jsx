@@ -8,8 +8,8 @@ export const Home = () => {
     // const {isLogged,logout} = useAuth();
     const {isLogged,logout} = useAuth();
     return (
-        <div>
-            Welcome to my app {}
+        <div >
+            Welcome to my app
             {/*<button onClick={() => navigate('/login')}>goToLogin!!</button>*/}
             <button onClick={() => logout()}>Logout!!</button>
             {isLogged ? <Protected></Protected> : <Public></Public>}
