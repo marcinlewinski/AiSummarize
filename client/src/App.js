@@ -5,22 +5,30 @@ import {Home} from "./components/home/Home";
 import {Login} from "./components/login/Login";
 import {Public} from "./components/demo/Public";
 import {useAuth} from "./providers/Auth/AuthProvider";
+import {HomePage} from "./pages/homePage/HomePage";
+import {SummarizePage} from "./pages/summarizePage/SummarizePage";
+import {PricingPage} from "./pages/pricingPage/PricingPage";
 
 
 const routerConfig = [
     {
         path: '/',
-        element: <Home/>,
+        element: <HomePage/>,
         errorElement: <ErrorPage/>,
     },
     {
-        path: '/login',
-        element: <Login/>,
+        path: '/home',
+        element: <HomePage/>,
         errorElement: <ErrorPage/>,
     },
     {
-        path: '/public',
-        element: <Public/>,
+        path: '/summarize',
+        element: <SummarizePage/>,
+        errorElement: <ErrorPage/>,
+    },
+    {
+        path: '/pricing',
+        element: <PricingPage/>,
         errorElement: <ErrorPage/>,
     },
 ];
