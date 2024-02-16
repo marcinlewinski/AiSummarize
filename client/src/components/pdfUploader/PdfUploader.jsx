@@ -1,106 +1,123 @@
-import React, { useCallback, useState } from 'react';
-import { Box, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
-import {FiberDvr} from "@mui/icons-material";
-const PdfUploader = () => {
-    const [files, setFiles] = useState([]);
-    const [isOpen, setIsOpen] = useState(false);
+import Dropzone from "react-dropzone";
+import {Cloud} from "@mui/icons-material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import {InputLabel} from "@mui/material";
 
-    const handleClick = () => {
-        setIsOpen(true);
-    };
+export const PdfUploader = ({handleDrop}) => {
+    const isSubscribed = false;
 
-    const handleClose = () => {
-        setIsOpen(false);
-    };
+    const isFileValid = (file) => {
+        const maxSizeAllowed = isSubscribed ? 16 * 1024 * 1024 : 4 * 1024 * 1024;
+        const allowedTypes = ["application/pdf"];
+        return file && allowedTypes.includes(file.type) && file.size <= maxSizeAllowed;
+    }
 
-    const handleDrop = useCallback(
-        (event) => {
-            event.preventDefault();
-            const droppedFiles = Array.from(event.dataTransfer.files);
-            setFiles((prevFiles) => [...prevFiles, ...droppedFiles]);
-        },
-        [setFiles]
-    );
+    const handleDropInterval = (acceptedFile) => {
+        const file = acceptedFile[0];
+        if (isFileValid(file)) {
+            handleDrop(acceptedFile);
+        } else {
+            console.error("Invalid file. Please upload a PDF file up to 4 MB.");
+        }
 
-    const handleDragOver = useCallback((event) => {
-        event.preventDefault();
-    }, []);
+    }
 
-    const handleRemoveFile = useCallback(
-        (index) => {
-            setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-        },
-        [setFiles]
-    );
 
     return (
-        <Box>
-            <Button variant="contained" onClick={handleClick} sx={{
-                width:'100%'
-            }}>
-                <UploadFileIcon sx={{
-                    margin:'10px'
-                }}></UploadFileIcon>
-
-                Upload new file
-            </Button>
-            <Dialog open={isOpen} onClose={handleClose}
-            >
-                <DialogTitle>Drop Zone</DialogTitle>
-                <DialogContent >
+        <Dropzone
+            multiple={false}
+            onDrop={handleDropInterval}
+        >
+            {({getRootProps, getInputProps, acceptedFiles}) => (
+                <Box
+                    {...getRootProps()}
+                    sx={{
+                        border: acceptedFiles.length > 0 ? '2px solid #4caf50' : '1px dashed #ccc',
+                        height: 200,
+                        margin: 4,
+                        borderRadius: 4,
+                    }}
+                >
                     <Box
                         sx={{
-                            border: '2px dashed #ccc',
-                            borderRadius: '8px',
-                            p: 2,
-                            textAlign: 'center',
-                            height: '200px',
                             display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
                             alignItems: 'center',
+                            justifyContent: 'center',
+                            height: '100%',
+                            width: '100%',
                         }}
-                        onDrop={handleDrop}
-                        onDragOver={handleDragOver}
                     >
-                        <Typography variant="h6" sx={{ mb: 2 }}>
-                            Drag & Drop your files here
-                        </Typography>
-                        <Button variant="contained" component="label">
-                            Browse
-                            <input type="file" multiple hidden />
-                        </Button>
-                        <Box sx={{ mt: 2 }}>
-                            {files.map((file, index) => (
-                                <Box key={file.name} sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <Typography variant="body1" sx={{ mr: 1 }}>
-                                        {file.name}
-                                    </Typography>
-                                    <Button
-                                        variant="outlined"
-                                        color="error"
-                                        onClick={() => handleRemoveFile(index)}
+                        <InputLabel
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                width: '100%',
+                                height: '100%',
+                                borderRadius: 4,
+                                cursor: 'pointer',
+                                backgroundColor: '#f0f0f0',
+                                '&:hover': {
+                                    backgroundColor: '#e0e0e0',
+                                },
+                            }}
+                            htmlFor='dropzone-file'
+                        >
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    paddingTop: 5,
+                                    paddingBottom: 6,
+                                }}
+                            >
+                                <Cloud sx={{
+                                    color: "black",
+                                    marginBottom: 2
+                                }}/>
+                                <Box
+                                    sx={{
+                                        fontSize: '0.875rem',
+                                        color: acceptedFiles.length > 0 ? "#4caf50" : "#bdbdbd",
+                                        marginButton: 2,
+                                    }}
+                                >
+                                    <Typography
+                                        variant="body1"
+                                        fontWeight="bold"
+                                        sx={{
+                                            color: acceptedFiles.length > 0 ? "#4caf50" : "grey",
+                                        }}
                                     >
-                                        Remove
-                                    </Button>
+                                        Click to upload
+                                    </Typography>
+                                    or drag and drop
                                 </Box>
-                            ))}
-                        </Box>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        fontSize: '0.625rem',
+                                        color: "#bdbdbd",
+                                    }}
+                                >
+                                    PDF (up to {isSubscribed ? "16" : "4"}MB)
+                                </Typography>
+                                {acceptedFiles && acceptedFiles[0] ? (
+                                    <Box sx={{marginTop: 2}}>
+                                        <Typography variant="body2" sx={{color: "black"}}>
+                                            {acceptedFiles[0].name}
+                                        </Typography>
+                                    </Box>
+                                ) : null}
+                            </Box>
+                        </InputLabel>
                     </Box>
-                </DialogContent>
-                <DialogActions>
-
-                    <Button onClick={handleClose} variant="contained">
-                        Close
-                    </Button>
-                    <Button onClick={handleClose} variant="contained">
-                        Upload
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </Box>
+                </Box>
+            )}
+        </Dropzone>
     );
 };
-
-export default PdfUploader;

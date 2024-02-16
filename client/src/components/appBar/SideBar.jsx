@@ -119,7 +119,7 @@ export default function SideBar() {
                 }}
             >
                 <Typography variant="h5" gutterBottom component="div" sx={{p: 2, pb: 0}}>
-                    Conversations
+
                 </Typography>
                 <List sx={{mb: 2}}>
                     {messages.map(({id, primary, secondary}) => (
