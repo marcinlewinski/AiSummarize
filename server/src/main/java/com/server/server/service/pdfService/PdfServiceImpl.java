@@ -24,8 +24,10 @@ public class PdfServiceImpl implements PdfService {
         try {
             return pdfRepository.save(pdfFactory.build(bytes, fileName)).getId();
 
-        } catch (PdfBuildAndSaveException e) {
-            throw new PdfBuildAndSaveException(e.getMessage());
+        } catch (PdfBuildAndSaveException error) {
+            throw error;
+        } catch (Exception e) {
+            throw new PdfBuildAndSaveException("An error occurred during PDF building and saving.", e);
         }
     }
 }
