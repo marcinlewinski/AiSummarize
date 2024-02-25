@@ -47,7 +47,22 @@ services:
       retries: 3
     networks:
       - keycloak_ai_summarize_dev_network
-
+  mysql_keycloak_ai_summarize:
+    image: mysql:latest
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data_keycloak_ai_summarize:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: aidatabase
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "keycloak", "--password=$MYSQL_PASSWORD" ]
+      timeout: 10s
+      retries: 3
+    networks:
+      - keycloak_ai_summarize_dev_network
   spring-server:
     image: spring-server
     build:
@@ -85,6 +100,7 @@ services:
 volumes:
   pgdata_keycloak_ai_summarize:
   pgdata_app:
+  mysql_data_keycloak_ai_summarize:
 networks:
   monolith_network:
     driver: bridge
