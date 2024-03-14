@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {InputLabel} from "@mui/material";
 
-export const PdfUploader = ({handleDrop}) => {
+export const PdfUploader = ({handleDrop,handleClose}) => {
     const isSubscribed = false;
 
     const isFileValid = (file) => {
@@ -17,6 +17,7 @@ export const PdfUploader = ({handleDrop}) => {
         const file = acceptedFile[0];
         if (isFileValid(file)) {
             handleDrop(acceptedFile);
+            handleClose();
         } else {
             console.error("Invalid file. Please upload a PDF file up to 4 MB.");
         }
