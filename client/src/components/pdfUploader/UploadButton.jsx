@@ -17,14 +17,15 @@ export const UploadButton = () => {
     const handleDrop = async (acceptedFiles) => {
         if (acceptedFiles.length > 0) {
             const file = acceptedFiles[0];
-
+            const name = acceptedFiles[0].name;
             if (file.type === "application/pdf") {
 
                 const formData = new FormData();
-                formData.append("pdfFile", file);
-
+                formData.append('fileName', name);
+                formData.append('pdfFile', file);
+console.log(formData);
                 try {
-                    const response = await httpClient.post("/api/upload/pdf", formData, {
+                    const response = await httpClient.post("/api/pdf/upload", formData, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },
@@ -51,7 +52,7 @@ export const UploadButton = () => {
                     minHeight: '300px',
                     minWidth: '500px',
                 }}>
-                    <PdfUploader handleDrop={handleDrop}></PdfUploader>
+                    <PdfUploader handleDrop={handleDrop} handleClose={handleClose}></PdfUploader>
                 </DialogContent>
             </Dialog>
         </Box>

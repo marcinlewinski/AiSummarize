@@ -6,16 +6,15 @@ import com.server.server.service.pdfService.PdfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.UUID;
 
-@RestController("/api/pdf")
+@RestController()
+@RequestMapping("/api/pdf")
+
 public class PdfController {
     private final PdfService pdfService;
 
@@ -33,7 +32,11 @@ public class PdfController {
         } catch (PdfBuildAndSaveException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing PDF: " + e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error!" + e.getMessage());
         }
+    }
+    @GetMapping("/get")
+    public ResponseEntity<Object> get() {
+        return ResponseEntity.status(HttpStatus.OK).body("Success!");
     }
 }

@@ -1,9 +1,6 @@
 package com.server.server.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +17,7 @@ public class PdfFile {
     @Id
     private UUID id;
     @Lob
+    @Column(length = 10485760)
     private byte[] content;
     private String fileName;
     private LocalDateTime uploadDate;
