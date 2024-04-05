@@ -1,12 +1,14 @@
-import NavBar from "../../components/appBar/NavBar";
-import {Home} from "../../components/home/Home";
+import * as React from 'react';
+import Home from "../../components/home/Home";
+import LandingPage from "../landingPage/LandingPage";
 
-export const HomePage = () => {
+
+export default function HomePage() {
+
+
     return (
-        <>
-            <NavBar></NavBar>
+        <LandingPage>
             <Home></Home>
-        </>
-
-    )
+        </LandingPage>
+    );
 }

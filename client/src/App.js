@@ -2,9 +2,9 @@ import React from "react";
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import ErrorPage from "./pages/errorPage/EroorPage";
 import {useAuth} from "./providers/Auth/AuthProvider";
-import {HomePage} from "./pages/homePage/HomePage";
 import {SummarizePage} from "./pages/summarizePage/SummarizePage";
 import {PricingPage} from "./pages/pricingPage/PricingPage";
+import HomePage from "./pages/homePage/HomePage";
 
 
 const routerConfig = [
