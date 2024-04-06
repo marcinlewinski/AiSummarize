@@ -23,7 +23,7 @@ export const UploadButton = () => {
                 const formData = new FormData();
                 formData.append('fileName', name);
                 formData.append('pdfFile', file);
-console.log(formData);
+                console.log(formData);
                 try {
                     const response = await httpClient.post("/api/pdf/upload", formData, {
                         headers: {
@@ -43,7 +43,7 @@ console.log(formData);
     };
     return (
         <Box>
-            <Button variant="contained" onClick={handleClick} sx={{width: '100%'}}>
+            <Button variant="contained" onClick={handleClick} sx={{width: '100%', mb: 2}}>
                 <UploadFileIcon sx={{margin: '10px'}}/>
                 Upload new file
             </Button>

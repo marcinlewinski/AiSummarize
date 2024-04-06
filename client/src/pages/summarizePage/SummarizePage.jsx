@@ -1,13 +1,10 @@
-import NavBar from "../../components/appBar/NavBar";
-import SideBar from "../../components/appBar/SideBar";
-import {UploadButton} from "../../components/pdfUploader/UploadButton";
+import LandingPage from "../landingPage/LandingPage";
+import Features from "../../components/summarize/Features";
 
 export const SummarizePage = () => {
     return (
-        <>
-            <NavBar></NavBar>
-            <SideBar></SideBar>
-            <UploadButton></UploadButton>
-        </>
-    )
+        <LandingPage>
+            <Features></Features>
+        </LandingPage>
+    );
 }

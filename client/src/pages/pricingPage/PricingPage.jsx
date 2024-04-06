@@ -1,13 +1,12 @@
-import {Pricing} from "../../components/pricing/Pricing";
-import NavBar from "../../components/appBar/NavBar";
-import PersistentDrawerLeft from "../../components/appBar/PersistentDrawerLeft";
+import LandingPage from "../landingPage/LandingPage";
+import * as React from "react";
+import Pricing from "../../components/pricing/Pricing";
+
 
 export const PricingPage = () => {
-return (
-    <>
-        <NavBar></NavBar>
-        <Pricing></Pricing>
-     <PersistentDrawerLeft></PersistentDrawerLeft>
-    </>
-)
+    return (
+        <LandingPage>
+            <Pricing></Pricing>
+        </LandingPage>
+    );
 }

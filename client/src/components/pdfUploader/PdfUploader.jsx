@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {InputLabel} from "@mui/material";
 
-export const PdfUploader = ({handleDrop,handleClose}) => {
+export const PdfUploader = ({handleDrop, handleClose}) => {
     const isSubscribed = false;
 
     const isFileValid = (file) => {
@@ -34,10 +34,15 @@ export const PdfUploader = ({handleDrop,handleClose}) => {
                 <Box
                     {...getRootProps()}
                     sx={{
-                        border: acceptedFiles.length > 0 ? '2px solid #4caf50' : '1px dashed #ccc',
+                        border: acceptedFiles.length > 0 ? '2px solid #4caf50' : '1px dashed #033363',
                         height: 200,
                         margin: 4,
                         borderRadius: 4,
+                        '&:hover': {
+                            border: '1px dashed #064079',
+                            boxShadow: `0 0 24px #064079`,
+
+                        },
                     }}
                 >
                     <Box
@@ -59,9 +64,11 @@ export const PdfUploader = ({handleDrop,handleClose}) => {
                                 height: '100%',
                                 borderRadius: 4,
                                 cursor: 'pointer',
-                                backgroundColor: '#f0f0f0',
+                                backgroundColor: 'background.default',
                                 '&:hover': {
-                                    backgroundColor: '#e0e0e0',
+                                    backgroundColor: 'action.drop',
+
+
                                 },
                             }}
                             htmlFor='dropzone-file'
@@ -77,22 +84,18 @@ export const PdfUploader = ({handleDrop,handleClose}) => {
                                 }}
                             >
                                 <Cloud sx={{
-                                    color: "black",
-                                    marginBottom: 2
+                                    mb: 2
                                 }}/>
                                 <Box
                                     sx={{
                                         fontSize: '0.875rem',
-                                        color: acceptedFiles.length > 0 ? "#4caf50" : "#bdbdbd",
+                                        color: acceptedFiles.length > 0 ? "success.dark" : "grey.300",
                                         marginButton: 2,
                                     }}
                                 >
                                     <Typography
                                         variant="body1"
                                         fontWeight="bold"
-                                        sx={{
-                                            color: acceptedFiles.length > 0 ? "#4caf50" : "grey",
-                                        }}
                                     >
                                         Click to upload
                                     </Typography>
@@ -102,7 +105,6 @@ export const PdfUploader = ({handleDrop,handleClose}) => {
                                     variant="body2"
                                     sx={{
                                         fontSize: '0.625rem',
-                                        color: "#bdbdbd",
                                     }}
                                 >
                                     PDF (up to {isSubscribed ? "16" : "4"}MB)
