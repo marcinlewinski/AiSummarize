@@ -1,4 +1,4 @@
-package com.server.server.service.pdfService;
+package com.server.server.pdf.service;
 
 import java.util.UUID;
 

@@ -1,6 +1,6 @@
-package com.server.server.service.pdfService;
+package com.server.server.pdf.service;
 
-import com.server.server.model.PdfFile;
+import com.server.server.pdf.model.PdfFile;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

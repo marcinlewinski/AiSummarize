@@ -1,4 +1,4 @@
-package com.server.server.model.request;
+package com.server.server.pdf.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

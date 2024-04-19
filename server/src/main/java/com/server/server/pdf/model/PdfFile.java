@@ -1,4 +1,4 @@
-package com.server.server.model;
+package com.server.server.pdf.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

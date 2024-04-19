@@ -1,7 +1,7 @@
-package com.server.server.service.pdfService;
+package com.server.server.pdf.service;
 
 import com.server.server.exceptions.PdfBuildAndSaveException;
-import com.server.server.repository.PdfRepository;
+import com.server.server.pdf.repository.PdfRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
