@@ -1,10 +1,10 @@
 import LandingPage from "../landingPage/LandingPage";
-import Features from "../../components/summarize/Features";
+import Summarize from "../../components/summarize/Summarize";
 
 export const SummarizePage = () => {
     return (
         <LandingPage>
-            <Features></Features>
+            <Summarize></Summarize>
         </LandingPage>
     );
 }

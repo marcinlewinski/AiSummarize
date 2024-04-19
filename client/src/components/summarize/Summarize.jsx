@@ -13,7 +13,7 @@ import {UploadButton} from "../pdfUploader/UploadButton";
 const items = [
     {
         title: 'Lorem',
-        description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec turpis eget sapien consequat vestibulum. Suspendisse potenti. Integer vitae justo magna. Mauris feugiat ultricies risus, sed ultricies libero commodo id.',
+        description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec turpis eget sapien consequat vestibulum. Suspendisse potenti. Integer vitae justo.',
     },
     {
         title: 'Nam interdum',
@@ -34,7 +34,7 @@ const items = [
 
 ];
 
-export default function Features() {
+export default function Summarize() {
     const [selectedItemIndex, setSelectedItemIndex] = React.useState(0);
 
     const handleItemClick = (index) => {

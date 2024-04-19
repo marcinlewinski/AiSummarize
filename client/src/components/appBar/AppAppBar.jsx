@@ -13,11 +13,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import {useNavigate} from "react-router-dom";
 import AdbIcon from "@mui/icons-material/Adb";
 import {alpha} from "@mui/material";
+import {useAuth} from "../../providers/Auth/AuthProvider";
 
 function AppAppBar() {
     const pages = ['Home', 'Pricing', 'Summarize'];
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
+    const {logout} = useAuth();
 
     const toggleDrawer = (newOpen) => () => {
         setOpen(newOpen);
@@ -28,6 +30,7 @@ function AppAppBar() {
         navigate(`/${page.toLowerCase()}`)
         console.log(page)
     };
+
     return (
         <Box style={{
             backgroundImage: `linear-gradient(#02294F, ${alpha('#090E10', 0.0)})`,
@@ -92,8 +95,7 @@ function AppAppBar() {
                                 variant="contained"
                                 size="small"
                                 component="a"
-                                href="/material-ui/getting-started/templates/sign-up/"
-                                target="_blank"
+                                onClick={logout}
                             >
                                 Logout
                             </Button>
